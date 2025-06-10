@@ -1,3 +1,9 @@
+package tests;
+
+import testframework.After;
+import testframework.Before;
+import testframework.Test;
+
 public class VeryUsefulTest {
     @Before
     public void prepare1() {
@@ -27,5 +33,11 @@ public class VeryUsefulTest {
     @Test
     public void test2() {
         System.out.println(this + " Test2");
+    }
+
+    @Test
+    public void test3() {
+        System.out.println(this + " Test3 (failing)");
+        throw new IllegalStateException("");
     }
 }

@@ -1,11 +1,18 @@
+package testframework;
+
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SuperMegaJUnitKiller {
-    public static void main(String... args) {
-        testEmAll("VeryUsefulTest");
+    private enum Stage { BEFORE, TEST, AFTER }
+
+    private SuperMegaJUnitKiller() {
+        throw new UnsupportedOperationException();
     }
 
     public static void testEmAll(String className) {
@@ -18,22 +25,29 @@ public class SuperMegaJUnitKiller {
         int total = 0, passed = 0, failed = 0;
         for (Method test : testMethods) {
             ++total;
+            Set<Stage> passedStages = new HashSet<>();
             Object object = createObject(clazz);
-            if (object == null) {
-                ++failed;
+            if (object != null) {
+                try {
+                    executeMethods(object, beforeMethods, Stage.BEFORE, passedStages);
+                    executeMethods(object, List.of(test), Stage.TEST, passedStages);
+                } catch (Throwable e) {
+                    // empty
+                } finally {
+                    try {
+                        executeMethods(object, afterMethods, Stage.AFTER, passedStages);
+                    } catch (Throwable e) {
+                        // empty
+                    }
+                }
+            }
+            if (passedStages.size() == Stage.values().length) {
+                ++passed;
             } else {
-                boolean success = executeMethods(object, beforeMethods);
-                if (success)
-                    success = executeMethods(object, List.of(test));
-                if (success)
-                    success = executeMethods(object, afterMethods);
-                if (success)
-                    ++passed;
-                else
-                    ++failed;
+                ++failed;
             }
         }
-        System.out.printf("Total: %d, passed: %d, failed: %d%n", total, passed, failed);
+        System.out.printf("-------%nTotal: %d, passed: %d, failed: %d%n", total, passed, failed);
     }
 
     private static Class<?> getClass(String className) {
@@ -44,15 +58,11 @@ public class SuperMegaJUnitKiller {
         }
     }
 
-    private static boolean executeMethods(Object object, List<Method> methods) {
+    private static void executeMethods(Object object, List<Method> methods, Stage stage, Set<Stage> passedStages) throws InvocationTargetException, IllegalAccessException {
         for (Method method : methods) {
-            try {
-                method.invoke(object);
-            } catch (Throwable e) {
-                return false;
-            }
+            method.invoke(object);
         }
-        return true;
+        passedStages.add(stage);
     }
 
     private static Object createObject(Class<?> clazz) {
@@ -75,9 +85,5 @@ public class SuperMegaJUnitKiller {
             else if (annotation instanceof Test)
                 testMethods.add(method);
         }
-    }
-
-    private SuperMegaJUnitKiller() {
-        throw new UnsupportedOperationException();
     }
 }
