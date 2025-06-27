@@ -1,4 +1,5 @@
 rootProject.name = "otusJava"
+include("HW08-solid")
 
 pluginManagement {
     val jgitver: String by settings
