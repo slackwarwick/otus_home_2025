@@ -1,4 +1,5 @@
 rootProject.name = "otusJava"
+include("HW15-structuralPatterns")
 
 pluginManagement {
     val jgitver: String by settings
