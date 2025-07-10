@@ -6,6 +6,8 @@ import ru.otus.handler.ComplexProcessor;
 import ru.otus.listener.ListenerPrinterConsole;
 import ru.otus.model.Message;
 import ru.otus.processor.*;
+import ru.otus.processor.homework.ProcessorChange11And12;
+import ru.otus.processor.homework.ProcessorThrowEvenSec;
 
 import java.time.LocalDateTime;
 import java.util.List;

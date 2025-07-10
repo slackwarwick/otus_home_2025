@@ -1,7 +1,8 @@
-package ru.otus.processor;
+package ru.otus.processor.homework;
 
 import org.junit.jupiter.api.Test;
 import ru.otus.model.Message;
+import ru.otus.processor.Processor;
 
 import java.time.LocalDateTime;
 
@@ -24,7 +25,4 @@ class ProcessorThrowEvenSecTest {
         assertDoesNotThrow(() -> p2.process(m2));
         assertEquals(m2, p2.process(m2));
     }
-
-
-
 }

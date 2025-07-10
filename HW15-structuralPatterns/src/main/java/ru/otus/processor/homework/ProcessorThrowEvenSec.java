@@ -1,9 +1,9 @@
-package ru.otus.processor;
+package ru.otus.processor.homework;
 
 import ru.otus.model.Message;
+import ru.otus.processor.Processor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class ProcessorThrowEvenSec implements Processor {
     private final DateTimeProvider dateTimeProvider;
