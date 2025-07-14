@@ -1,6 +1,7 @@
 dependencies {
     implementation ("ch.qos.logback:logback-classic")
     implementation("org.glassfish:jakarta.json")
+    implementation("com.fasterxml.jackson.core:jackson-databind")
 
     testImplementation ("org.junit.jupiter:junit-jupiter-api")
     testImplementation ("org.junit.jupiter:junit-jupiter-engine")
