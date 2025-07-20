@@ -1,4 +1,5 @@
 rootProject.name = "otusJava"
+include("HW18-jdbc")
 
 pluginManagement {
     val jgitver: String by settings
