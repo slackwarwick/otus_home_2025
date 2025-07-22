@@ -39,7 +39,8 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                     }
                 }
                 return object;
-            } catch (SQLException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            } catch (SQLException | IllegalAccessException | InvocationTargetException | InstantiationException |
+                     NoSuchMethodException e) {
                 throw new DataTemplateException(e);
             }
         });
@@ -59,7 +60,8 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                     objects.add(object);
                 }
                 return objects;
-            } catch (SQLException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            } catch (SQLException | IllegalAccessException | InvocationTargetException | InstantiationException |
+                     NoSuchMethodException e) {
                 throw new DataTemplateException(e);
             }
         }).get();

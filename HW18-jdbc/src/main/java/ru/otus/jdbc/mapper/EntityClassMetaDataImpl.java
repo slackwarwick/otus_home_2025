@@ -10,7 +10,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
-    private Class<T> clazz;
+    private final Class<T> clazz;
+    private String tableName;
+    Constructor<T> constructor;
+    private Field idField;
+    private List<Field> fieldsWithoutId;
 
     public EntityClassMetaDataImpl(Class<T> clazz) {
         this.clazz = clazz;
@@ -18,36 +22,46 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public String getName() {
-        return clazz.getSimpleName().toLowerCase();
+        if (tableName == null) {
+            tableName = clazz.getSimpleName().toLowerCase();
+        }
+        return tableName;
     }
 
     @Override
-    public Constructor<T> getConstructor() {
-        try {
-            return clazz.getConstructor();
-        } catch (NoSuchMethodException e) {
-            return null;
+    public Constructor<T> getConstructor() throws NoSuchMethodException {
+        if (constructor == null) {
+            constructor = clazz.getConstructor();
         }
+        return constructor;
     }
 
     @Override
     public Field getIdField() {
-        for (Field field : clazz.getDeclaredFields()) {
-            if (field.getAnnotation(Id.class) != null)
-                return field;
+        if (idField == null) {
+            for (Field field : clazz.getDeclaredFields()) {
+                if (field.getAnnotation(Id.class) != null)
+                    idField = field;
+            }
         }
-        return null;
+        return idField;
     }
 
     @Override
     public List<Field> getAllFields() {
-        return Arrays.stream(clazz.getDeclaredFields()).toList();
+        List<Field> result = new ArrayList<>();
+        result.add(getIdField());
+        result.addAll(getFieldsWithoutId());
+        return result;
     }
 
     @Override
     public List<Field> getFieldsWithoutId() {
-        return Arrays.stream(clazz.getDeclaredFields())
-                .filter(f -> f.getAnnotation(Id.class) == null)
-                .toList();
+        if (fieldsWithoutId == null) {
+            fieldsWithoutId = Arrays.stream(clazz.getDeclaredFields())
+                    .filter(f -> f.getAnnotation(Id.class) == null)
+                    .toList();
+        }
+        return fieldsWithoutId;
     }
 }
