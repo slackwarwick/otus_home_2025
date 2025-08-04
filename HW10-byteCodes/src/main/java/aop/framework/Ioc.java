@@ -1,11 +1,10 @@
-package aop;
+package aop.framework;
 
+import aop.logged.TestLogging;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.util.Arrays;
 
 public class Ioc {
@@ -13,17 +12,23 @@ public class Ioc {
 
     private Ioc() {}
 
-    static TestLoggingInterface createTestLogging() {
-        InvocationHandler handler = new DemoInvocationHandler(new TestLogging());
-        return (TestLoggingInterface)
-                Proxy.newProxyInstance(Ioc.class.getClassLoader(), new Class<?>[] {TestLoggingInterface.class}, handler);
+    public static <T> T createTestLogging(Class<T> ifaceClazz, Class<? extends T> implClazz) {
+        T object;
+        try {
+            Constructor<? extends T> constructor = implClazz.getConstructor();
+            object = constructor.newInstance();
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            throw new IocException(e);
+        }
+        InvocationHandler handler = new DemoInvocationHandler<T>(object);
+        return (T) Proxy.newProxyInstance(Ioc.class.getClassLoader(), new Class<?>[] {ifaceClazz}, handler);
     }
 
-    static class DemoInvocationHandler implements InvocationHandler {
-        private final TestLoggingInterface myObject;
-        private final Class<? extends TestLoggingInterface> myClass;
+    static class DemoInvocationHandler<T> implements InvocationHandler {
+        private final T myObject;
+        private final Class<?> myClass;
 
-        DemoInvocationHandler(TestLoggingInterface myObject) {
+        DemoInvocationHandler(T myObject) {
             this.myObject = myObject;
             this.myClass = myObject.getClass();
         }
@@ -42,7 +47,7 @@ public class Ioc {
                 throw new IllegalArgumentException(String.format("Method params count: %d, values count: %d",
                         method.getParameterCount(), args.length));
             }
-            StringBuilder b = new StringBuilder(method.getName());
+            StringBuilder b = new StringBuilder(myClass.getSimpleName() + "." + method.getName());
             for (int i = 0; i < method.getParameters().length; ++i) {
                 b.append(", ").append(method.getParameters()[i].getName()).append(": ").append(args[i]);
             }

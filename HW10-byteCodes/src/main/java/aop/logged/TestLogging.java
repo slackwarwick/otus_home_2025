@@ -1,4 +1,6 @@
-package aop;
+package aop.logged;
+
+import aop.framework.Log;
 
 public class TestLogging implements TestLoggingInterface {
     @Override
