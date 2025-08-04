@@ -1,4 +1,5 @@
 rootProject.name = "otusJava"
+include("HW10-byteCodes")
 
 pluginManagement {
     val jgitver: String by settings
