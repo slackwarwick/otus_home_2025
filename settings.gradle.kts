@@ -1,4 +1,5 @@
 rootProject.name = "otusJava"
+include("HW21-jpql")
 
 pluginManagement {
     val jgitver: String by settings
