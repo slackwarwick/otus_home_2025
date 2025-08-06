@@ -29,8 +29,7 @@ public class Client implements Cloneable {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JoinColumn(name = "client_id", nullable = false, updatable = false)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Phone> phones;
 
     public Client(String name) {
@@ -47,6 +46,9 @@ public class Client implements Cloneable {
         this(id, name);
         this.address = address;
         this.phones = phones;
+        for (Phone phone : phones) {
+            phone.setClient(this);
+        }
     }
 
     @Override

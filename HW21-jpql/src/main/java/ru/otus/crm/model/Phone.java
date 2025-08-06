@@ -19,6 +19,10 @@ public class Phone implements Cloneable {
     @Column(name = "number")
     private String number;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", nullable = false)
+    private Client client;
+
     public Phone(Long id, String number) {
         this.id = id;
         this.number = number;
