@@ -1,4 +1,5 @@
 rootProject.name = "otusJava"
+include("HW24-webServer")
 
 pluginManagement {
     val jgitver: String by settings
