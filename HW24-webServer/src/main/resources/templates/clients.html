@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Клиенты</title>
+    <script>
+        function addClient() {
+            const client = {
+                name: document.getElementById('clientNameInput').value,
+                login: document.getElementById('clientLoginInput').value,
+                address: {
+                    street: document.getElementById('clientAddressInput').value
+                },
+                phones: [
+                    {
+                        number: document.getElementById('clientPhoneInput').value
+                    }
+                ]
+            };
+            console.log(client);
+            fetch('api/client/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(client)
+            }).then(unused => window.location.reload(true));
+        }
+    </script>
+</head>
+
+<body>
+<h4>Добавить клиента</h4>
+<input type="text" id = "clientNameInput" placeholder="Введите имя клиента">
+<input type="text" id = "clientLoginInput" placeholder="Введите логин клиента">
+<input type="text" id = "clientAddressInput" placeholder="Введите адрес клиента">
+<input type="text" id = "clientPhoneInput" placeholder="Введите телефон клиента">
+<button onclick="addClient()">Добавить</button>
+
+<h4>Список клиентов</h4>
+<table style="width: 400px">
+    <thead>
+    <tr>
+        <th style="width: 50px">Id</th>
+        <th style="width: 150px">Имя</th>
+        <th style="width: 100px">Логин</th>
+        <th style="width: 100px">Адрес</th>
+        <th style="width: 100px">Телефон</th>
+    </tr>
+    </thead>
+    <tbody>
+    <#list clients as client>
+        <tr>
+            <td>${client.id}</td>
+            <td>${client.name}</td>
+            <td>${client.login}</td>
+            <td><#if client.address?has_content>
+                    ${client.address.street}
+                <#else>
+                    -
+                </#if>
+            </td>
+            <td><#if client.phones?has_content>
+                    <#list client.phones as phone>${phone.number}<#sep>, </#list>
+                <#else>
+                    -
+                </#if>
+            </td>
+        </tr>
+    </#list>
+    </tbody>
+</table>
+</body>
+</html>
