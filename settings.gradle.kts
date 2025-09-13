@@ -1,4 +1,5 @@
 rootProject.name = "otusJava"
+include("HW25-di")
 
 pluginManagement {
     val jgitver: String by settings
