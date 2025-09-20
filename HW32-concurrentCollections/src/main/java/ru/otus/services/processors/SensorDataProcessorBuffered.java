@@ -42,9 +42,7 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
         }
         try {
             List<SensorData> bufferedData = new ArrayList<>();
-            synchronized (this) {
-                dataBuffer.drainTo(bufferedData);
-            }
+            dataBuffer.drainTo(bufferedData);
             if (!bufferedData.isEmpty()) {
                 synchronized (writer) {
                     writer.writeBufferedData(bufferedData);
