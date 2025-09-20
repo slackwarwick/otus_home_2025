@@ -1,4 +1,5 @@
 rootProject.name = "otusJava"
+include("HW32-concurrentCollections")
 
 pluginManagement {
     val jgitver: String by settings
