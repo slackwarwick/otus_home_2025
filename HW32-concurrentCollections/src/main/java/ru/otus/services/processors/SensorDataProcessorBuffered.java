@@ -7,6 +7,7 @@ import ru.otus.api.model.SensorData;
 import ru.otus.lib.SensorDataBufferedWriter;
 
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -20,7 +21,7 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
 
     private final int bufferSize;
     private final SensorDataBufferedWriter writer;
-    private final Queue<SensorData> dataBuffer = new PriorityBlockingQueue<>(10, Comparator.comparing(SensorData::getMeasurementTime));
+    private final BlockingQueue<SensorData> dataBuffer = new PriorityBlockingQueue<>(10, Comparator.comparing(SensorData::getMeasurementTime));
 
     public SensorDataProcessorBuffered(int bufferSize, SensorDataBufferedWriter writer) {
         this.bufferSize = bufferSize;
@@ -43,10 +44,7 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
             List<SensorData> bufferedData = new ArrayList<>();
             synchronized (this) {
                 while (!dataBuffer.isEmpty() && bufferedData.size() < bufferSize) {
-                    SensorData data = dataBuffer.poll();
-                    if (data != null) {
-                        bufferedData.add(data);
-                    }
+                    dataBuffer.drainTo(bufferedData);
                 }
             }
             if (!bufferedData.isEmpty()) {
