@@ -1,4 +1,5 @@
 rootProject.name = "otusJava"
+include("HW34-multiprocess")
 
 pluginManagement {
     val jgitver: String by settings
