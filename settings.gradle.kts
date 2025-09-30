@@ -1,4 +1,5 @@
 rootProject.name = "otusJava"
+include("HW28-springDataJdbc")
 
 pluginManagement {
     val jgitver: String by settings
