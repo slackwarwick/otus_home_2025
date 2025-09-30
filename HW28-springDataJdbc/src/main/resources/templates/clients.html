@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Клиенты</title>
+    <script>
+        function addClient() {
+            const client = {
+                name: document.getElementById('clientNameInput').value,
+                login: document.getElementById('clientLoginInput').value,
+                address: {
+                    street: document.getElementById('clientAddressInput').value
+                },
+                phones: [
+                    {
+                        number: document.getElementById('clientPhoneInput').value
+                    }
+                ]
+            };
+            console.log(client);
+            fetch('api/client', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(client)
+            }).then(unused => window.location.reload(true));
+        }
+    </script>
+</head>
+
+<body>
+
+<h4>Добавить клиента</h4>
+<input type="text" id = "clientNameInput" placeholder="Введите имя клиента">
+<input type="text" id = "clientLoginInput" placeholder="Введите логин клиента">
+<input type="text" id = "clientAddressInput" placeholder="Введите адрес клиента">
+<input type="text" id = "clientPhoneInput" placeholder="Введите телефон клиента">
+<button onclick="addClient()">Добавить</button>
+
+<h4>Список клиентов</h4>
+<table style="width: 400px">
+    <thead>
+    <tr>
+        <th style="width: 50px">Id</th>
+        <th style="width: 150px">Имя</th>
+        <th style="width: 100px">Логин</th>
+        <th style="width: 100px">Адрес</th>
+        <th style="width: 100px">Телефон</th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr th:each="client : ${clients}">
+            <td th:text="${client.id}"></td>
+            <td th:text="${client.name}"></td>
+            <td th:text="${client.login}"></td>
+            <td>
+                <span th:if="${client.address}" th:text="${client.address.street}"></span>
+                <span th:unless="${client.address}">-</span>
+            </td>
+            <td>
+                <span th:if="${client.phones}"
+                      th:each="phone,iterStat: ${client.phones}"
+                      th:with="number=${phone.getNumber()} + ${iterStat.count != iterStat.size ? ',' : ''}"
+                      th:text="${number}"></span>
+                <span th:unless="${client.phones != null AND !client.phones.isEmpty()}">-</span>
+            </span>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>
