@@ -1,4 +1,6 @@
 rootProject.name = "otusJava"
+include("HW38-webflux:client-service")
+include("HW38-webflux:datastore-service")
 
 pluginManagement {
     val jgitver: String by settings
