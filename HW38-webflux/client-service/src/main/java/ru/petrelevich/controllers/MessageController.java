@@ -27,8 +27,6 @@ public class MessageController {
     private final WebClient datastoreClient;
     private final SimpMessagingTemplate template;
 
-    private boolean oneRoomToRuleThemAllConnected;
-
     public MessageController(WebClient datastoreClient, SimpMessagingTemplate template) {
         this.datastoreClient = datastoreClient;
         this.template = template;
@@ -41,9 +39,7 @@ public class MessageController {
 
         Message dto = new Message(HtmlUtils.htmlEscape(message.messageStr()));
         template.convertAndSend(String.format("%s%s", TOPIC_TEMPLATE, roomId), dto);
-        if (oneRoomToRuleThemAllConnected) {
-            template.convertAndSend(String.format("%s%s", TOPIC_TEMPLATE, ONE_ROOM_TO_RULE_THEM_ALL), dto);
-        }
+        template.convertAndSend(String.format("%s%s", TOPIC_TEMPLATE, ONE_ROOM_TO_RULE_THEM_ALL), dto);
     }
 
     @EventListener
@@ -66,7 +62,6 @@ public class MessageController {
         logger.info("subscription for:{}, roomId:{}, user:{}", simpDestination, roomId, principal.getName());
         if (roomId == ONE_ROOM_TO_RULE_THEM_ALL) {
             logger.info("DO NOT ENTER 1408!");
-            oneRoomToRuleThemAllConnected = true;
             String destination = String.format("%s%s", TOPIC_TEMPLATE, ONE_ROOM_TO_RULE_THEM_ALL);
             getAllMessages()
                     .doOnError(ex -> logger.error("getting all messages failed", ex))
